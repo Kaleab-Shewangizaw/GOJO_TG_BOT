@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Sora, Space_Mono } from "next/font/google";
 import Script from "next/script";
+
 import "./globals.css";
 
 const sora = Sora({
@@ -31,6 +32,7 @@ export default function RootLayout({
           src="https://telegram.org/js/telegram-web-app.js"
           strategy="beforeInteractive"
         />
+        <div className="pointer-events-none fixed inset-0 -z-10 bg-[radial-gradient(circle_at_top_left,_#fce7f3_0,_transparent_45%),radial-gradient(circle_at_bottom_right,_#cffafe_0,_transparent_35%),linear-gradient(145deg,_#f8fafc_0%,_#fff7ed_50%,_#eef2ff_100%)]" />
         {children}
       </body>
     </html>

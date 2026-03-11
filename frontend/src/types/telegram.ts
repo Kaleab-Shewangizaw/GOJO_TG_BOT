@@ -10,6 +10,8 @@ export interface TelegramWebAppInitDataUnsafe {
 }
 
 export interface TelegramWebApp {
+  /** Raw URL-encoded string used to verify the user server-side. */
+  initData: string;
   initDataUnsafe: TelegramWebAppInitDataUnsafe;
   ready: () => void;
   expand: () => void;
