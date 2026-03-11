@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 
 import type { TelegramUser, TelegramWebApp } from "@/types/telegram";
+import { getTelegramUserFromWebApp } from "@/utils/telegram-user";
 
 interface UseTelegramResult {
   webApp: TelegramWebApp | null;
@@ -42,7 +43,7 @@ export function useTelegram(): UseTelegramResult {
       tg.expand();
 
       setWebApp(tg);
-      setUser(tg.initDataUnsafe?.user ?? null);
+      setUser(getTelegramUserFromWebApp(tg));
 
       // Verify initData server-side with the bot token, then set the user.
       if (tg.initData) {
