@@ -53,7 +53,7 @@ function verifyTelegramInitData(
 }
 
 export async function POST(req: NextRequest) {
-  const botToken = process.env.BOT_TOKEN;
+  const botToken = process.env.BOT_TOKEN?.trim();
 
   if (!botToken) {
     return NextResponse.json(

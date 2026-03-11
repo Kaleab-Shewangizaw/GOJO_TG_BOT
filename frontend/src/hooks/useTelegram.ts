@@ -42,6 +42,7 @@ export function useTelegram(): UseTelegramResult {
       tg.expand();
 
       setWebApp(tg);
+      setUser(tg.initDataUnsafe?.user ?? null);
 
       // Verify initData server-side with the bot token, then set the user.
       if (tg.initData) {
@@ -50,24 +51,28 @@ export function useTelegram(): UseTelegramResult {
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ initData: tg.initData }),
         })
-          .then((res) => res.json())
+          .then(async (res) => {
+            const data = await res.json();
+
+            if (!res.ok) {
+              return null;
+            }
+
+            return data;
+          })
           .then((data) => {
             if (isMounted && data?.user) {
               setUser(data.user as TelegramUser);
             }
           })
           .catch(() => {
-            // Fall back to unverified data if network fails
-            if (isMounted) {
-              setUser(tg.initDataUnsafe?.user ?? null);
-            }
+            // Keep the client-provided fallback when verification request fails.
           })
           .finally(() => {
             if (isMounted) setIsReady(true);
           });
       } else {
-        // No initData (e.g. browser dev environment) – use unverified fallback
-        setUser(tg.initDataUnsafe?.user ?? null);
+        // No initData (e.g. browser dev environment) – keep the client fallback.
         setIsReady(true);
       }
     };
