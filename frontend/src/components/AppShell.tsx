@@ -7,6 +7,7 @@ import { BlogScreen } from "@/components/screens/BlogScreen";
 import { ChatScreen } from "@/components/screens/ChatScreen";
 import { HomeScreen } from "@/components/screens/HomeScreen";
 import { SettingsScreen } from "@/components/screens/SettingsScreen";
+import { SupportScreen } from "@/components/screens/SupportScreen";
 import { useTelegram } from "@/hooks/useTelegram";
 import type { Tab } from "@/types/navigation";
 
@@ -21,6 +22,7 @@ export function AppShell() {
           <HomeScreen webApp={webApp} user={user} isReady={isReady} />
         )}
         {activeTab === "chat" && <ChatScreen />}
+        {activeTab === "support" && <SupportScreen webApp={webApp} />}
         {activeTab === "blog" && <BlogScreen />}
         {activeTab === "settings" && <SettingsScreen user={user} />}
       </main>

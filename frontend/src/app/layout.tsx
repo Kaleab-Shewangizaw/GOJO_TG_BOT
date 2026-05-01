@@ -16,8 +16,8 @@ const spaceMono = Space_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Telegram Mini App",
-  description: "Production-ready Telegram Mini App frontend built with Next.js",
+  title: "GojoHost — Mini App",
+  description: "GojoHost support hub and assistant (Telegram Mini App)",
 };
 
 export default function RootLayout({

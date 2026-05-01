@@ -12,6 +12,42 @@ interface HomeScreenProps {
   isReady: boolean;
 }
 
+interface OpenBotHubButtonProps {
+  webApp: TelegramWebApp | null;
+}
+
+function OpenBotHubButton({ webApp }: OpenBotHubButtonProps) {
+  const rawUsername = process.env.NEXT_PUBLIC_TELEGRAM_BOT_USERNAME?.trim().replace(/^@/, "");
+  const canOpen = Boolean(webApp?.openTelegramLink && rawUsername?.length);
+
+  const handleOpenBotMenu = (): void => {
+    if (!webApp?.openTelegramLink || !rawUsername) {
+      return;
+    }
+    webApp.openTelegramLink(`https://t.me/${rawUsername}?start=menu`);
+  };
+
+  return (
+    <div className="flex flex-col gap-1">
+      <button
+        type="button"
+        onClick={handleOpenBotMenu}
+        disabled={!canOpen}
+        className="w-full rounded-2xl border border-slate-200 bg-white px-5 py-3.5 text-sm font-medium text-slate-900 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-50"
+      >
+        Open bot support hub (/menu)
+      </button>
+      {!canOpen && (
+        <p className="text-[11px] text-slate-500 px-1 leading-snug">
+          Add <span className="font-mono">NEXT_PUBLIC_TELEGRAM_BOT_USERNAME</span> (no @) to{" "}
+          <span className="font-mono">frontend/.env</span> or <span className="font-mono">.env.local</span>
+          {" "}and restart the dev server — or open the bot and send <span className="font-mono">/menu</span>.
+        </p>
+      )}
+    </div>
+  );
+}
+
 export function HomeScreen({ webApp, user, isReady }: HomeScreenProps) {
   const handleSendData = useCallback(() => {
     if (!webApp) return;
@@ -36,14 +72,17 @@ export function HomeScreen({ webApp, user, isReady }: HomeScreenProps) {
 
       <TelegramUserCard user={user} />
 
-      <button
-        type="button"
-        onClick={handleSendData}
-        disabled={!webApp}
-        className="w-full rounded-2xl bg-slate-900 px-5 py-3.5 text-sm font-medium text-slate-50 transition hover:bg-slate-700 disabled:cursor-not-allowed disabled:bg-slate-400"
-      >
-        Send Data to Bot
-      </button>
+      <div className="flex flex-col gap-2.5">
+        <button
+          type="button"
+          onClick={handleSendData}
+          disabled={!webApp}
+          className="w-full rounded-2xl bg-slate-900 px-5 py-3.5 text-sm font-medium text-slate-50 transition hover:bg-slate-700 disabled:cursor-not-allowed disabled:bg-slate-400"
+        >
+          Send Data to Bot
+        </button>
+        <OpenBotHubButton webApp={webApp} />
+      </div>
 
       <section className="rounded-2xl border border-slate-200 bg-white/90 p-5 shadow-sm">
         <h2 className="text-sm font-semibold text-slate-900">Quick Links</h2>

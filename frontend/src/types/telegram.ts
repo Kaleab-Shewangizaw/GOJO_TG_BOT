@@ -16,6 +16,12 @@ export interface TelegramWebApp {
   ready: () => void;
   expand: () => void;
   sendData: (data: string) => void;
+  /** Opens a t.me / tg:// link inside Telegram (Mini App SDK 6.1+ when available). */
+  openTelegramLink?: (url: string) => void;
+  /** Optional haptics when running inside Telegram. */
+  HapticFeedback?: {
+    impactOccurred: (style: "light" | "medium" | "heavy") => void;
+  };
 }
 
 export interface TelegramNamespace {
