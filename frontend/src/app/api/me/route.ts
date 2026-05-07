@@ -26,10 +26,9 @@ function verifyTelegramInitData(
     .map(([k, v]) => `${k}=${v}`)
     .join("\n");
 
-  // secret_key = HMAC-SHA256("WebAppData", bot_token)
-  const secretKey = createHmac("sha256", "WebAppData")
-    .update(botToken)
-    .digest();
+  // secret_key = HMAC-SHA256(bot_token, "WebAppData")
+  // Per Telegram docs, the HMAC uses the bot token as the key and "WebAppData" as the message.
+  const secretKey = createHmac("sha256", botToken).update("WebAppData").digest();
 
   // computed_hash = HMAC-SHA256(secret_key, data_check_string)
   const computedHash = createHmac("sha256", secretKey)

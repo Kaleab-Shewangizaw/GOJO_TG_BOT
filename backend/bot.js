@@ -262,8 +262,8 @@ bot.on("text", async (ctx) => {
       completion.choices?.[0]?.message?.content?.trim() ||
       "Sorry, couldn't generate a response right now 😅";
 
-    // KEY FIX: Added { parse_mode: "Markdown" }
-    await ctx.reply(aiReply, { parse_mode: "Markdown" });
+    // Send AI output as plain text because model text can contain unsafe Markdown.
+    await ctx.reply(aiReply);
     
   } catch (error) {
     console.error("Groq API error:", error?.response?.data || error.message);
