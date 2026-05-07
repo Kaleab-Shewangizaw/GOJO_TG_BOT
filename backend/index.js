@@ -5,12 +5,17 @@ require("dotenv").config({
 });
 
 const { logStartupHints } = require("./support/startup-hints");
+const { initRedis, closeRedis } = require("./support/redis-client");
 logStartupHints();
 
 const bot = require("./bot");
 
 (async () => {
   try {
+    // Initialize Redis before starting bot
+    const redisUrl = process.env.REDIS_URL;
+    await initRedis(redisUrl);
+
     await bot.launch();
     console.log("[startup] Long polling active. Press Ctrl+C to stop.");
   } catch (err) {
@@ -35,6 +40,7 @@ async function shutdown(signal) {
   } catch {
     /* ignore */
   } finally {
+    await closeRedis();
     process.exit(0);
   }
 }

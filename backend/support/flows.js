@@ -15,7 +15,7 @@ async function startTicketFlow(ctx) {
     return;
   }
 
-  setSession(userId, {
+  await setSession(userId, {
     type: "ticket",
     step: 1,
     draft: {},
@@ -39,7 +39,7 @@ async function startVerifyFlow(ctx) {
     return;
   }
 
-  setSession(userId, {
+  await setSession(userId, {
     type: "verify",
     step: 1,
     draft: {},
@@ -65,7 +65,7 @@ async function handleSessionText(ctx) {
     return false;
   }
 
-  const session = getSession(userId);
+  const session = await getSession(userId);
 
   if (!session) {
     return false;
@@ -96,7 +96,7 @@ async function handleTicketStep(ctx, session, text) {
   if (session.step === 1) {
     session.draft.email = text;
     session.step = 2;
-    setSession(userId, session);
+    await setSession(userId, session);
     await ctx.reply(
       "**Step 2** — **Short category** (e.g. billing, email, website down, dns):",
       { parse_mode: "Markdown" }
@@ -107,7 +107,7 @@ async function handleTicketStep(ctx, session, text) {
   if (session.step === 2) {
     session.draft.category = text;
     session.step = 3;
-    setSession(userId, session);
+    await setSession(userId, session);
     await ctx.reply(
       "**Step 3** — **What you already tried** (one message, keep it honest):",
       { parse_mode: "Markdown" }
@@ -118,7 +118,7 @@ async function handleTicketStep(ctx, session, text) {
   if (session.step === 3) {
     session.draft.triage = text;
     session.step = 4;
-    setSession(userId, session);
+    await setSession(userId, session);
     await ctx.reply(
       "**Step 4** — **Problem description** — include **exact error text** or screenshots description:",
       { parse_mode: "Markdown" }
@@ -138,7 +138,7 @@ async function handleTicketStep(ctx, session, text) {
     `Telegram user: @${ctx.from?.username || "(no username)"} (id ${ctx.from?.id})\n\n` +
     `Send this block to **${urls.SUPPORT_EMAIL}** or Telegram **${urls.SUPPORT_TELEGRAM}**.`;
 
-  clearSession(userId);
+  await clearSession(userId);
 
   await ctx.reply(body, { parse_mode: "Markdown" });
 
@@ -159,7 +159,7 @@ async function handleVerifyStep(ctx, session, text) {
   if (session.step === 1) {
     session.draft.domain = text;
     session.step = 2;
-    setSession(userId, session);
+    await setSession(userId, session);
     await ctx.reply(
       "**Step 2** — **Last invoice ID or last 4 digits of phone** on the account (whatever you can share safely here):",
       { parse_mode: "Markdown" }
@@ -170,7 +170,7 @@ async function handleVerifyStep(ctx, session, text) {
   if (session.step === 2) {
     session.draft.invoiceOrPhone = text;
     session.step = 3;
-    setSession(userId, session);
+    await setSession(userId, session);
     await ctx.reply(
       "**Step 3** — **What needs changing?** (password reset, DNS change, billing, etc.)",
       { parse_mode: "Markdown" }
@@ -189,7 +189,7 @@ async function handleVerifyStep(ctx, session, text) {
     `Email **${urls.SUPPORT_EMAIL}** or **${urls.SUPPORT_TELEGRAM}**.\n` +
     `Support may ask for DNS TXT or official ID per policy.`;
 
-  clearSession(userId);
+  await clearSession(userId);
 
   await ctx.reply(summary, { parse_mode: "Markdown" });
 }
@@ -201,7 +201,7 @@ async function cancelFlow(ctx) {
   const userId = ctx.from?.id;
 
   if (userId) {
-    clearSession(userId);
+    await clearSession(userId);
   }
 
   await ctx.reply("Cancelled. /menu when you need the hub.");
